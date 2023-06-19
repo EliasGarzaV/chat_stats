@@ -9,7 +9,7 @@ def text_to_df(file_path:str) -> pd.DataFrame:
     matches = re.findall(whatsapp_regex, text, re.MULTILINE)
     
     chat = pd.DataFrame(matches, columns=["date", "name", "message"])
-    chat['date'] = pd.to_datetime(chat['date'])
+    chat['date'] = pd.to_datetime(chat['date'], dayfirst=True)
     
     return chat
 
