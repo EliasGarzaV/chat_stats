@@ -2,23 +2,32 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def plot_number_texts(chat:pd.DataFrame):
+def plot_number_texts(chat:pd.DataFrame, size = None):
     num_chats = chat['name'].value_counts()
-    plt.bar(num_chats.index, num_chats)
-    plt.xticks(rotation='vertical')
+    
+    fig = plt.figure(figsize = size)
+    ax = fig.add_subplot()
+    
+    ax.bar(num_chats.index, num_chats)
+    plt.xticks(rotation='vertical', fontsize = 10)
     plt.xlabel('Names')
     plt.ylabel('Number of texts')
+    
+    return fig
     
 def plot_texts_per_weekday(chat:pd.DataFrame):
     weekday = {0:'Monday', 1:'Tuesday', 2:'Wednesday', 3:'Thursday',
                4:'Friday', 5:'Saturday', 6:'Sunday'}
     chats_per_day = chat.groupby(chat['date'].dt.day_of_week).size().reset_index(name='count')
     
-    plt.plot(chats_per_day['date'].apply(lambda x: weekday[x]), chats_per_day['count'])
+    fig, ax = plt.subplots()
+    ax.plot(chats_per_day['date'].apply(lambda x: weekday[x]), chats_per_day['count'])
     plt.ylim([0, chats_per_day['count'].max()* 1.2])
     plt.xticks(rotation='vertical')
     plt.xlabel('Weekday')
     plt.ylabel('Number of texts')
+    
+    return fig
 
 def plot_texts_per_month(chat:pd.DataFrame):
     month_dict = {
@@ -31,13 +40,16 @@ def plot_texts_per_month(chat:pd.DataFrame):
     chats_per_month = chats_per_month.set_index('date')
     chats_per_month = chats_per_month.reindex(all_months, fill_value=0).reset_index()
     
-    plt.plot(chats_per_month['date'].apply(lambda x: month_dict[x]), chats_per_month['count'])
+    fig, ax = plt.subplots()
+    ax.plot(chats_per_month['date'].apply(lambda x: month_dict[x]), chats_per_month['count'])
 
     plt.ylim([0, chats_per_month['count'].max()* 1.2])
-    plt.xlim([1, 12])
+    plt.xlim([0, 11])
     plt.xticks(rotation='vertical')
     plt.xlabel('Month')
     plt.ylabel('Number of texts')
+    
+    return fig
        
 def plot_texts_per_hour(chat:pd.DataFrame):
     hours = range(0, 24)
@@ -45,13 +57,16 @@ def plot_texts_per_hour(chat:pd.DataFrame):
     chats_per_hour = chats_per_hour.set_index('date')
     chats_per_hour = chats_per_hour.reindex(hours, fill_value=0).reset_index()
 
-    plt.plot(chats_per_hour['date'].apply(lambda x: str(x) + ':00'), chats_per_hour['count'])
+    fig, ax = plt.subplots()
+    ax.plot(chats_per_hour['date'].apply(lambda x: str(x) + ':00'), chats_per_hour['count'])
 
     plt.ylim([0, chats_per_hour['count'].max()* 1.2])
     plt.xlim([0, 24])
     plt.xticks(rotation='vertical')
     plt.xlabel('Hour')
     plt.ylabel('Number of texts')
+    
+    return fig
        
 def plot_texts_per_day(chat:pd.DataFrame):
     """This always includes 29 of february!!!
@@ -77,13 +92,16 @@ def plot_texts_per_day(chat:pd.DataFrame):
     chats_per_day = chats_per_day.set_index('date')
     chats_per_day = chats_per_day.reindex(days, fill_value=0).reset_index()
 
-    plt.plot(chats_per_day['date'], chats_per_day['count'])
+    fig, ax = plt.subplots()
+    ax.plot(chats_per_day['date'], chats_per_day['count'])
 
     plt.ylim([0, chats_per_day['count'].max()* 1.2])
     plt.xlim([0, 366])
     plt.xticks(rotation='vertical')
     plt.xlabel('Day of the year')
     plt.ylabel('Number of texts per day')
+    
+    return fig
 
 def sentiment_mean(chat:pd.DataFrame):
     cols =  ['name', 'neg', 'neu', 'pos', 'compound']
