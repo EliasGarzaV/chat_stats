@@ -18,11 +18,9 @@ st.set_page_config(page_title="General Insights",
 
 #Streamlit
 st.header("General Information")
-st.subheader('Client Based Campaign')
-
-st.write("""Recommends a list of top products based on the customer's information and 
-            historical purchases to enhance their shopping experience. 
-            """)
+# st.write("""Recommends a list of top products based on the customer's information and 
+#             historical purchases to enhance their shopping experience. 
+#             """)
 
 from PIL import Image
 
@@ -31,17 +29,21 @@ def cb():
     
 chat = st.session_state['chat']
 
-with st.container():
-    st.pyplot(plot_number_texts(chat))
+st.subheader('Chat activity per User')
 
-col1, col2 = st.columns(2)
+st.plotly_chart(plot_number_texts(chat))
 
-with col1:
-    st.pyplot(plot_texts_per_weekday(chat))
-    st.pyplot(plot_texts_per_day(chat))
-    
-with col2:
-    st.pyplot(plot_texts_per_month(chat))
-    st.pyplot(plot_texts_per_hour(chat))
+st.subheader('Conversation starts per user')
+st.write('If the group is inactive for 6 hours. The next person to send a text '+
+         'adds one to their conversation starts. ')
+
+st.plotly_chart(plot_conv_starts(chat))
+
+st.subheader('Seasonal traffic')
+
+st.plotly_chart(plot_texts_per_hour(chat))
+st.plotly_chart(plot_texts_per_weekday(chat))
+st.plotly_chart(plot_texts_per_month(chat))
+st.plotly_chart(plot_texts_per_day(chat))
     
 
