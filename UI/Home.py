@@ -7,10 +7,10 @@ from io import StringIO
 
 st.set_page_config(
     page_title="Chat Stats",
-    # page_icon= Image.open('boat-removebg-preview.png')
+    page_icon= Image.open('figures\LogoChat_Stats.png')
 )
 
-# st.image('Cemex_logo_2023.png', width= 200)
+st.image('figures\LogoChat_Stats.png', width= 200)
 
 # boat = Image.open('cemexandboar.png')
 
