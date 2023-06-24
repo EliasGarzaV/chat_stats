@@ -46,4 +46,8 @@ st.plotly_chart(plot_texts_per_weekday(chat))
 st.plotly_chart(plot_texts_per_month(chat))
 st.plotly_chart(plot_texts_per_day(chat))
     
+st.subheader('Message Stats')
+
+st.plotly_chart(plot_most_used_emojis(chat))
+st.plotly_chart(plot_word_cloud(chat))
 

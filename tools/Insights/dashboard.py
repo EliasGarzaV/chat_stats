@@ -2,6 +2,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import plotly.express as px
 import seaborn as sns
+import emoji
+from wordcloud import WordCloud
 
 def plot_number_texts(chat:pd.DataFrame, size = None, format:str='plotly'):
     num_chats = chat['name'].value_counts()
@@ -141,8 +143,6 @@ def plot_texts_per_day(chat:pd.DataFrame, format:str='plotly'):
 def sentiment_mean(chat:pd.DataFrame):
     cols =  ['name', 'neg', 'neu', 'pos', 'compound']
     chat[cols].groupby('name').mean()
-    
-#inicia conversaciones
 
 def plot_conv_starts(chat:pd.DataFrame, size = None, format:str='plotly'):
     chat['time_diff'] = chat['date'].diff().apply(lambda x: x.total_seconds() / 3600)
@@ -164,10 +164,30 @@ def plot_conv_starts(chat:pd.DataFrame, size = None, format:str='plotly'):
         fig.update(layout_showlegend=False)
     
     return fig
+     
+def plot_most_used_emojis(chat, num_emojis:int=6):
+    text = ''.join(chat['message'])
+    emoji_count = pd.Series([s['emoji']
+            for s in emoji.emoji_list(text)]).value_counts().head(num_emojis)
     
+    fig = px.bar(emoji_count, labels = {'index': 'Emoji', 'value':'Times Used'})
+    fig.update(layout_showlegend=False)
+    fig.update_layout(title = 'Most used Emojis', title_x = 0.5)
     
-#emojis
-#palabras más usadas
-#ats
-#fin de conversacion
-#horas del dia
+    return fig
+    
+def plot_word_cloud(chat:pd.DataFrame, size=(1500,700),num_words:int=50):
+    text = ' '.join(chat['message']).split()
+    text = filter(lambda x: len(x)>3, text)
+
+    word_count = pd.Series(text).value_counts()
+    word_count = word_count.drop(['<Multimedia', 'omitido>'])
+    
+    wc = WordCloud(background_color="white", width=size[0], height=size[1])
+    wc.generate_from_frequencies(word_count.head(num_words))
+    
+    fig = px.imshow(wc)
+    fig.update_layout(title = 'Most used Words', title_x = 0.5)
+    fig.update_xaxes(visible=False)
+    fig.update_yaxes(visible=False)
+    return fig
