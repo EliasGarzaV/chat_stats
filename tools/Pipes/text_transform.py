@@ -13,3 +13,14 @@ def text_to_df(file_path:str) -> pd.DataFrame:
     
     return chat
 
+def str_to_df(text:str) -> pd.DataFrame:
+    """Translates a .txt file that comes from a whatsapp export to a pandas Dataframe"""
+    
+    whatsapp_regex = r"(\d{2}/\d{2}/\d{2} \d{1,2}:\d{2} [ap]\. m\.) - ([^:]+): (.*)"
+    matches = re.findall(whatsapp_regex, text, re.MULTILINE)
+    
+    chat = pd.DataFrame(matches, columns=["date", "name", "message"])
+    chat['date'] = pd.to_datetime(chat['date'], dayfirst=True)
+    
+    return chat
+

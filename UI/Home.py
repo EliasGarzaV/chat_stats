@@ -3,7 +3,9 @@ from PIL import Image
 import pandas as pd
 import re
 from io import StringIO
-# from ..Pipes.text_transform import *
+import sys
+sys.path.append("../")
+from tools.Pipes.text_transform import *
 
 st.set_page_config(
     page_title="Chat Stats",
@@ -25,20 +27,14 @@ st.info(
     """
 )
 
+
 @st.cache_data
 def load(text) -> pd.DataFrame:
     """Translates a .txt file that comes from a whatsapp export to a pandas Dataframe"""
 
     text = StringIO(chat_file.getvalue().decode('utf-8')).read()
     
-    whatsapp_regex = r"(\d{2}/\d{2}/\d{2} \d{1,2}:\d{2} [ap]\. m\.) - ([^:]+): (.*)"
-    #text = open(file_path, "r", encoding="utf8").read()
-    matches = re.findall(whatsapp_regex, text, re.MULTILINE)
-    
-    chat = pd.DataFrame(matches, columns=["date", "name", "message"])
-    chat['date'] = pd.to_datetime(chat['date'])
-    
-    return chat
+    return str_to_df(text)
 
 label = 'To start, please upload the exported .txt file of the exported chat. You can get it from your phone in the Whatsapp app.'
 chat_file = st.file_uploader(label, type='txt', accept_multiple_files=False,
